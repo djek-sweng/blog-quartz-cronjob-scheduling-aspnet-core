@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CronJobScheduling.DataStore\CronJobScheduling.DataStore.csproj" />
     <ProjectReference Include="..\CronJobScheduling\CronJobScheduling.csproj" />
+    <ProjectReference Include="..\CronJobScheduling.Jobs\CronJobScheduling.Jobs.csproj" />
   </ItemGroup>
 
   <Target Name="NetClean" BeforeTargets="Clean">

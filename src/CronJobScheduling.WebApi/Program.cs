@@ -5,6 +5,7 @@ builder.Services.AddCronJobScheduling();
 builder.Services.AddCronJobSchedulingDataStore(
     migrationsAssembly: typeof(ApplicationDbContext).Assembly,
     connectionString: builder.Configuration.GetConnectionString("Npgsql"));
+builder.Services.AddCronJobSchedulingJobs();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -4,4 +4,9 @@
     <ProjectReference Include="..\CronJobScheduling\CronJobScheduling.csproj" />
   </ItemGroup>
 
+  <Target Name="NetClean" BeforeTargets="Clean">
+    <RemoveDir Directories="bin" />
+    <RemoveDir Directories="obj" />
+  </Target>
+
 </Project>

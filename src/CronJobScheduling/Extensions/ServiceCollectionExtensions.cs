@@ -1,6 +1,6 @@
-namespace CronJobScheduling;
+namespace CronJobScheduling.Extensions;
 
-public static class ServiceCollectionExtension
+public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCronJobScheduling(this IServiceCollection services)
     {

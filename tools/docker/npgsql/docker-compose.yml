@@ -1,0 +1,47 @@
+# Run docker container:
+#   docker compose up --remove-orphans
+#
+# Server login credentials:
+#   username=root
+#   password=pasSworD
+#
+# Server connection string:
+#   "Server=localhost; Port=5432; Username=root; Password=pasSworD; Database=cronjob_db;"
+#
+# Using psql for debugging:
+#   docker-compose exec -u postgres db bash
+#
+# Open database adminer:
+#    http://localhost:4300/
+#
+# Documentation:
+#   https://www.postgresql.org/docs
+#   https://www.adminer.org
+#   https://hub.docker.com/_/postgres
+#   https://hub.docker.com/_/adminer
+#   https://github.com/docker-library/docs/tree/master/postgres
+
+version: '3.2'
+
+services:
+
+  db:
+    container_name: npgsql-db
+    #image: postgres:latest
+    image: postgres:15.1
+    #image: postgres:14.5
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: pasSworD
+    ports:
+      - "5432:5432"
+
+  adminer:
+    container_name: npgsql-adminer
+    image: adminer:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "4300:8080"

@@ -1,6 +1,11 @@
 <Project>
 
   <ItemGroup>
+    <!-- Quartz.NET -->
+    <PackageReference Include="Quartz" Version="3.6.0"/>
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.0"/>
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.0"/>
+    <!-- Swagger -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 

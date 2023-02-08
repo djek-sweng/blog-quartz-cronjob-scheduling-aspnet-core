@@ -11,7 +11,7 @@ public class NoteRepository : INoteRepository
 
     public async Task AddNoteAsync(Note note, CancellationToken cancellationToken = default)
     {
-        _ctx.Add(note);
+        _ctx.Notes.Add(note);
         await _ctx.SaveChangesAsync(cancellationToken);
     }
 }

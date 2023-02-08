@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
 
         services.AddQuartzHostedService(options =>
         {
-            options.StartDelay = TimeSpan.FromMilliseconds(1000);
+            options.StartDelay = TimeSpan.FromMilliseconds(1_000);
             options.AwaitApplicationStarted = true;
             options.WaitForJobsToComplete = true;
         });

@@ -5,9 +5,14 @@ public abstract class CronJobSchedulingStarter
     public static async Task StartAsync(IApplicationBuilder builder, CancellationToken cancellationToken = default)
     {
         //
-        // Get cron jobs from application's service container.
+        // Create service scope to resolve injected application services.
         //
-        var cronJobs = builder.ApplicationServices
+        using var scope = builder.ApplicationServices.CreateScope();
+
+        //
+        // Get cron jobs from service container.
+        //
+        var cronJobs = scope.ServiceProvider
             .GetServices<ICronJob>()
             .ToList();
 
@@ -19,9 +24,9 @@ public abstract class CronJobSchedulingStarter
         EnsureValidCronJobs(cronJobs);
 
         //
-        // Get Quartz scheduler from application's service container.
+        // Get Quartz scheduler from service container.
         //
-        var scheduler = await builder.ApplicationServices
+        var scheduler = await scope.ServiceProvider
             .GetRequiredService<ISchedulerFactory>()
             .GetScheduler(cancellationToken);
 

@@ -11,6 +11,6 @@ public class AliveController : ControllerBase
     [HttpGet("HeartBeat")]
     public IActionResult GetHeartBeat()
     {
-        return Ok($"Bumm, bumm. {DateTime.UtcNow}");
+        return Ok($"[{DateTime.UtcNow}] Bumm, bumm.");
     }
 }

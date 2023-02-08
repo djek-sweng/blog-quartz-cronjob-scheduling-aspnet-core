@@ -6,12 +6,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddQuartz(options =>
         {
-            options.SchedulerId = "MySchedulerId";
-            options.SchedulerName = "MySchedulerName";
-
-            // var loggerFactory = new LoggerFactory()
-            //     .AddSerilog(Log.Logger);
-            // options.SetLoggerFactory(loggerFactory);
+            options.SchedulerId = "Scheduler.Core";
+            options.SchedulerName = "Quartz.AspNetCore.Scheduler";
 
             options.UseMicrosoftDependencyInjectionJobFactory();
 
@@ -22,8 +18,8 @@ public static class ServiceCollectionExtensions
 
         services.AddQuartzHostedService(options =>
         {
+            options.StartDelay = TimeSpan.FromMilliseconds(1000);
             options.AwaitApplicationStarted = true;
-            options.StartDelay = TimeSpan.FromSeconds(10);
             options.WaitForJobsToComplete = true;
         });
 

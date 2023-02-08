@@ -27,6 +27,29 @@ public static class ServiceCollectionExtensions
             options.WaitForJobsToComplete = true;
         });
 
+        services.AddCronJobs(typeof(ServiceCollectionExtensions).Assembly);
+
+        return services;
+    }
+
+    public static IServiceCollection AddCronJobs(this IServiceCollection services, Assembly assembly)
+    {
+        var abstraction = typeof(ICronJob);
+        var baseType = typeof(CronJobBase<>);
+
+        var implementations = assembly.GetTypes()
+            .Where(t =>
+                (t.IsAssignableTo(abstraction)
+                 || t.BaseType == baseType)
+                && t.IsClass
+                && t.IsAbstract == false)
+            .ToList();
+
+        foreach (var implementation in implementations)
+        {
+            services.AddTransient(abstraction, implementation);
+        }
+
         return services;
     }
 }

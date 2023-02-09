@@ -24,14 +24,14 @@ public abstract class CronJobSchedulingStarter
         EnsureValidCronJobs(cronJobs);
 
         //
-        // Get Quartz scheduler from service container.
+        // Get Quartz scheduler factory from service container and build scheduler.
         //
         var scheduler = await scope.ServiceProvider
             .GetRequiredService<ISchedulerFactory>()
             .GetScheduler(cancellationToken);
 
         //
-        // Create list with jobs and their triggers for scheduler.
+        // Create dictionary with jobs and their triggers for scheduler.
         //
         var jobsAndTriggers = new Dictionary<IJobDetail, IReadOnlyCollection<ITrigger>>();
 

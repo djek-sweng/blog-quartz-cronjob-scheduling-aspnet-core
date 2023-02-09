@@ -158,7 +158,7 @@ Zum Hinzufügen und Speichern einer Notiz verwendet `CreateNoteJob` eine Impleme
 
 Die Implementierungen von [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) und [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) werden in der Methode [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) im Service Container des WebHosts registriert.
 
-Der zweite Cron-Job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) löscht mit jeden Aufruf alle `Notes` bis mit Ausnahme der beiden letzten `Notes`.
+Der zweite Cron-Job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) löscht mit jeden Aufruf alle `Notes` mit Ausnahme der beiden letzten `Notes`.
 
 ```csharp
 // File: DeleteNotesJob.cs
@@ -197,7 +197,9 @@ Bevor die Cron-Jobs dem Scheduler hinzugefügt werden registrieren wir sie im Se
 ```csharp
 // File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (Auszug)
 
-public static IServiceCollection AddCronJobs(this IServiceCollection services, Assembly assembly)
+public static IServiceCollection AddCronJobs(
+    this IServiceCollection services,
+    Assembly assembly)
 {
     var abstraction = typeof(ICronJob);
     var baseType = typeof(CronJobBase<>);
@@ -222,12 +224,14 @@ public static IServiceCollection AddCronJobs(this IServiceCollection services, A
 Die Methode registriert mittels `Reflection` alle Cron-Jobs des gegebenen `Assembly`.
 
 #### **Cron-Job Scheduling starten**
-Im letzten Schritt wird der Quartz Scheduler mit den implementierten Cron-Jobs bestückt und gestartet. Dies erfolgt ebenfalls automatisch über die Methode [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
+Im letzten Schritt wird der Quartz Scheduler mit den implementierten Cron-Jobs bestückt und gestartet. Dies erfolgt automatisch über die Methode [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
 
 ```csharp
 // File: CronJobSchedulingStarter.cs (Auszug)
 
-public static async Task StartSchedulingAsync(IApplicationBuilder builder, CancellationToken cancellationToken = default)
+public static async Task StartSchedulingAsync(
+    IApplicationBuilder builder,
+    CancellationToken cancellationToken = default)
 {
     //
     // Create service scope to resolve injected application services.
@@ -249,14 +253,14 @@ public static async Task StartSchedulingAsync(IApplicationBuilder builder, Cance
     EnsureValidCronJobs(cronJobs);
 
     //
-    // Get Quartz scheduler from service container.
+    // Get Quartz scheduler factory from service container and build scheduler.
     //
     var scheduler = await scope.ServiceProvider
         .GetRequiredService<ISchedulerFactory>()
         .GetScheduler(cancellationToken);
 
     //
-    // Create list with jobs and their triggers for scheduler.
+    // Create dictionary with jobs and their triggers for scheduler.
     //
     var jobsAndTriggers = new Dictionary<IJobDetail, IReadOnlyCollection<ITrigger>>();
 
@@ -285,54 +289,18 @@ public static async Task StartSchedulingAsync(IApplicationBuilder builder, Cance
 }
 ```
 
+Die Cron-Jobs und die Quartz Scheduler-Factory werden aus dem Service Container bezogen. Die Scheduler-Factory erstellt den Scheduler, der anschließend mit einem Dictionary aus Paaren von Jobs und Triggern bestückt wird. Die Trigger werden mit der zugehörigen CronExpressions konfiguriert. Zuletzt wird der Scheduler gestartet.
 
+Nachdem der Quartz Scheduler gestartet wurde, kann auch die WebApi gestartet werden. Die letzten beiden Zeilen der Datei [`Program.cs`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.WebApi/Program.cs) starten Scheduler und WebApi.
 
-:
+```csharp
+// File: Program.cs (Auszug)
 
-:
+app.RunCronJobScheduling();
+app.Run();
+```
 
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-:
-
-
-
-
-#### **Job dem Scheduler hinzufügen**
-
-
-
-
-#### **Scheduler starten**
-
-
-
-
-#### **Postgres Datenbankserver starten**
+#### **Anwendungsbeispiel starten (proof of concept)**
 Sofern du [Docker](https://www.docker.com/) auf deinem Rechner installiert hast, kannst du den in der Anwendung verwendenten Postgres Datenbankserver innerhalb eines Docker Containers ausführen. Starte dafür einfach den Docker Engine und führe anschließend das Shell-Skript [`run_npgsql_server.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_npgsql_server.sh) aus.
 
 Über den folgenden Connection String kannst du die Anwendungen dann mit der Datenbank verbinden:
@@ -343,7 +311,23 @@ Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_
 
 Wenn du auf deinem Rechner einen Postgres Datenbankserver installiert hast, dann kannst du auch diesen verwenden. Stelle in diesem Fall aber eine entsprechende Konfiguration sicher.
 
+Starte nachschließend die WebApi indem du das Shell-Skript [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh) ausführst.
 
+Wenn du das Anwendungsbeispiel unter Zuhilfenahme von `run_npgsql_server.sh` ausführst, dann kannst du in deinem Browser den Datenbank [Adminer](https://www.adminer.org/en/) über die folgende URL http://localhost:4300 öffnen.
 
+Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden eine neue `Note` erzeugt und gespeichert wird. Zur vollen Minute werden dann alle `Notes` mit Ausnahme der beiden letzten `Notes` gelöscht.
+
+Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier implementierten Cron-Jobs ausgeführt werden.
 
 #### **Fazit**
+Der Blog zeigt dir die vollständige Integration des Quartz.NET Frameworks in deine ASP.NET Core WebApi. Die Implementierung eines Cron-Jobs ist einfach möglich. Dafür hast du eine abstrakte Basis-Klasse implementiert. Die Konfiguration der Quartz Services, sowie das Starten des Scheduler ist fast vollständig automatisierbar. Dazu hast du entsprechende Erweiterungsmethoden implementiert.
+
+In einem weiteren Schritt könntest du die Scheduling-Ergebnisse überwachen. Dafür bietet sich die Implementierung der Quartz Listener an. Ebenfalls könntest du die Ausführung der einzelnen Cron-Jobs in einer eigenen Datenbanktabelle persistieren. Beide Erweiterungen würden die Qualität deines Scheduling System nochmal deutlich verbessern.
+
+You can find the complete code in this GitHub repository.
+
+Happy Coding!
+
+German version
+
+https://www.traperto.com/bla-bla-bla/

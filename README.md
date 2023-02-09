@@ -192,6 +192,98 @@ Der Cron-Job `DeleteNotesJob` soll zu jeder vollen Minute ausgeführt werden, si
 Zwei weitere Cron-Job Implementierungen zeigen die Klassen [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) und [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs).
 
 #### **Cron-Jobs im Service Container registrieren**
+Bevor die Cron-Jobs dem Scheduler hinzugefügt werden registrieren wir sie im Service Container des WebHosts. Dies erfolgt automatisch über die Methode [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs).
+
+```csharp
+// File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (Auszug)
+
+public static IServiceCollection AddCronJobs(this IServiceCollection services, Assembly assembly)
+{
+    var abstraction = typeof(ICronJob);
+    var baseType = typeof(CronJobBase<>);
+
+    var implementations = assembly.GetTypes()
+        .Where(t =>
+            (t.IsAssignableTo(abstraction)
+             || t.BaseType == baseType)
+            && t.IsClass
+            && t.IsAbstract == false)
+        .ToList();
+
+    foreach (var implementation in implementations)
+    {
+        services.AddTransient(abstraction, implementation);
+    }
+
+    return services;
+}
+```
+
+Die Methode registriert mittels `Reflection` alle Cron-Jobs des gegebenen `Assembly`.
+
+#### **Cron-Job Scheduling starten**
+Im letzten Schritt wird der Quartz Scheduler mit den implementierten Cron-Jobs bestückt und gestartet. Dies erfolgt ebenfalls automatisch über die Methode [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
+
+```csharp
+// File: CronJobSchedulingStarter.cs (Auszug)
+
+public static async Task StartSchedulingAsync(IApplicationBuilder builder, CancellationToken cancellationToken = default)
+{
+    //
+    // Create service scope to resolve injected application services.
+    //
+    using var scope = builder.ApplicationServices.CreateScope();
+
+    //
+    // Get cron jobs from service container.
+    //
+    var cronJobs = scope.ServiceProvider
+        .GetServices<ICronJob>()
+        .ToList();
+
+    if (cronJobs.Count < 1)
+    {
+        return;
+    }
+
+    EnsureValidCronJobs(cronJobs);
+
+    //
+    // Get Quartz scheduler from service container.
+    //
+    var scheduler = await scope.ServiceProvider
+        .GetRequiredService<ISchedulerFactory>()
+        .GetScheduler(cancellationToken);
+
+    //
+    // Create list with jobs and their triggers for scheduler.
+    //
+    var jobsAndTriggers = new Dictionary<IJobDetail, IReadOnlyCollection<ITrigger>>();
+
+    foreach (var cronJob in cronJobs)
+    {
+        var jobDetail = JobBuilder.Create(cronJob.GetType())
+            .WithIdentity(cronJob.Name, cronJob.Group)
+            .WithDescription(cronJob.Description)
+            .Build();
+
+        var trigger = TriggerBuilder.Create()
+            .WithIdentity($"trigger.{cronJob.Name}", "standard")
+            .WithCronSchedule(cronJob.CronExpression)
+            .Build();
+
+        jobsAndTriggers.Add(jobDetail, new[] { trigger });
+    }
+
+    //
+    // Finish scheduling.
+    //
+    await DeleteExistingJobFromScheduler(scheduler, jobsAndTriggers.Keys, cancellationToken);
+
+    await scheduler.ScheduleJobs(jobsAndTriggers, replace: false, cancellationToken);
+    await scheduler.Start(cancellationToken);
+}
+```
 
 
 

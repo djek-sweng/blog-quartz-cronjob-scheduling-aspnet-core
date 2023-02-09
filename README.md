@@ -1,8 +1,8 @@
-### Quartz Cronjob Scheduling ASP.NET Core
+### Quartz.NET Cron-Job Scheduling ASP.NET Core
 
-Quartz.NET ist ein voll funktionsfähiges, quelloffenes Job Scheduling Framework, das von kleinsten Anwendungen bis hin zu großen Unternehmenssystemen eingesetzt werden kann.
+Quartz.NET ist ein voll bewährtes, quelloffenes und gut dokumentiertes Job-Scheduling Framework, das in verschiedensten Anwendungen eingesetzt werden kann.
 
-Dieser Blogbeitrag zeigt dir, wie du Quartz.NET in deine eigene ASP.NET Core WebApi integrieren kannst.
+Dieser Blogbeitrag zeigt dir, wie du Quartz.NET (kurz Quartz) in eine ASP.NET Core WebApi integrieren kannst.
 
 Hauptaugenmerk liegt auf der Interaktion mit einem relationalen Datenbanksystem (hier Postgres) sowie mit Microsofts Objekt-Datenbank-Mapper Entity Framework Core (kurz EF Core).
 
@@ -10,9 +10,9 @@ Hauptaugenmerk liegt auf der Interaktion mit einem relationalen Datenbanksystem 
 Durch die Verwendung von Quartz bieten sich dir die folgenden Vorteile:
 
 * Quartz kann in deine bestehende Anwendungen integriert oder als eigenständiges Programm ausgeführt werden.
-* Ein ausführbarer Job ist eine einfache .NET-Klasse, die das `IJob` Interface von Quartz implementiert.
+* Ein ausführbarer Job ist eine Klasse, die das `IJob` Interface von Quartz implementiert.
 * Der Quartz Scheduler führt einen Job aus, wenn der zugehörige Trigger erfolgt. 
-* Ein Trigger unterstützt eine Vielzahl von Optionen und ist über eine CronExpression sekundengenau einstellbar.
+* Ein Trigger unterstützt eine Vielzahl von Optionen und ist über eine Cron-Expression sekundengenau einstellbar.
 * Über die Implementierung eines Listeners können Scheduling-Ergebnisse überwacht werden.
 
 #### **Quartz installieren**
@@ -32,7 +32,7 @@ dotnet add package Quartz.Extensions.Hosting
 In der Datei [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/Directory.Build.targets) findest du dann alle notwendigen Pakete, die du für die hier gezeigte Anwendung installieren musst.
 
 #### **Quartz konfigurieren**
-Bevor die WebApi mit integriertem Quartz Framework gestartet wird, müssen die Quartz Services konfiguriert werden. Du findest die Konfiguration in der Methode `AddCronJobScheduling()`, welche in `Program.cs` als Erweiterung von `IServiceCollection` aufgerufen wird.
+Bevor die WebApi mit integriertem Quartz gestartet werden kann, müssen die Quartz Services konfiguriert werden. Du findest die Konfiguration in der Methode `AddCronJobScheduling()`, welche in der Datei `Program.cs` als Erweiterung von `IServiceCollection` aufgerufen wird.
 
 ```csharp
 // File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (Auszug)
@@ -62,11 +62,59 @@ public static IServiceCollection AddCronJobScheduling(this IServiceCollection se
 }
 ```
 
+#### **Interface ICronJob erstellen**
+Die im Blog implementierten Jobs sollen als Cron-Job mittels Cron-Expression ausgeführt werden. Dafür wird das Interface [`ICronJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/ICronJob.cs) erstellt, welches das Quartz Standard-Interface `IJob` erweitert. 
+
+```csharp
+// File: ICronJob.cs
+
+namespace CronJobScheduling.Abstractions;
+
+public interface ICronJob : IJob
+{
+    string Name { get; }
+    string Group { get; }
+    string CronExpression { get; }
+    string Description => string.Empty;
+}
+```
+
+Neben der `CronExpression` erfordert die Implementierung von `ICronJob` einen `Name`, eine `Group` und eine optionale `Description`.
+
+Beispiele für gültige Cron-Expressions findest du in der Klasse [`CronExpressionDefaults`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronExpressionDefaults.cs) oder in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions).
+
+#### **Abstrakte Basisklasse CronJobBase**
+Um eine direkte Abhängigkeit der Cron-Jobs auf `ICronJob` und `IJob` bzw. auf Quartz selbst zu vermeiden wird die abstrakte Basisklasse [`CronJobBase`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/CronJobBase.cs) implementiert.
+
+
+```csharp
+// File: CronJobBase.cs
+
+namespace CronJobScheduling.Abstractions;
+
+public abstract class CronJobBase<T> : ICronJob
+    where T : class
+{
+    public virtual string Name => typeof(T).FullName ?? nameof(T);
+    public virtual string Description => string.Empty;
+
+    public abstract string Group { get; }
+    public abstract string CronExpression { get; }
+
+    public async Task Execute(IJobExecutionContext context)
+    {
+        await InvokeAsync(context.CancellationToken);
+    }
+
+    protected abstract Task InvokeAsync(CancellationToken cancellationToken);
+}
+```
+
+Die Basisklasse implementiert die von `IJob` geforderte Methode `Execute(IJobExecutionContext context)`
 
 
 
-
-
+Die im Blog implementierten Jobs 
 
 
 
@@ -115,7 +163,7 @@ public static IServiceCollection AddCronJobScheduling(this IServiceCollection se
 
 
 
-https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions
+
 
 
 

@@ -13,10 +13,10 @@ public class DeleteNotesJob : CronJobBase<DeleteNotesJob>
         _noteRepository = noteRepository;
     }
 
-    protected override async Task ExecuteAsync()
+    protected override async Task InvokeAsync(CancellationToken cancellationToken)
     {
-        var notes = await _noteRepository.GetNotesDescendingAsync(skip: 2);
+        var notes = await _noteRepository.GetNotesDescendingAsync(skip: 2, cancellationToken);
 
-        await _noteRepository.RemoveNotesAsync(notes);
+        await _noteRepository.RemoveNotesAsync(notes, cancellationToken);
     }
 }

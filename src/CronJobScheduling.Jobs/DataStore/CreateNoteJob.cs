@@ -13,10 +13,10 @@ public class CreateNoteJob : CronJobBase<CreateNoteJob>
         _noteRepository = noteRepository;
     }
 
-    protected override async Task ExecuteAsync()
+    protected override async Task InvokeAsync(CancellationToken cancellationToken)
     {
         var note = Note.Create($"Created by '{Name}' at '{DateTime.UtcNow}'.");
 
-        await _noteRepository.AddNoteAsync(note);
+        await _noteRepository.AddNoteAsync(note, cancellationToken);
     }
 }

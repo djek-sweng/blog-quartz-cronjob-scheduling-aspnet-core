@@ -11,8 +11,8 @@ public abstract class CronJobBase<T> : ICronJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        await ExecuteAsync();
+        await InvokeAsync(context.CancellationToken);
     }
 
-    protected abstract Task ExecuteAsync();
+    protected abstract Task InvokeAsync(CancellationToken cancellationToken);
 }

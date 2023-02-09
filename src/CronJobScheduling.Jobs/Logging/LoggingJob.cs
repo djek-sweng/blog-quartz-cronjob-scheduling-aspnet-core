@@ -13,7 +13,7 @@ public class LoggingJob : CronJobBase<LoggingJob>
         _logger = logger;
     }
 
-    protected override Task ExecuteAsync()
+    protected override Task InvokeAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("[{UtcNow}] {Name} is executed", DateTime.UtcNow, Name);
 

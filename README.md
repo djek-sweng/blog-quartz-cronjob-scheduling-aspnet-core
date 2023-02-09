@@ -1,18 +1,18 @@
 ### Quartz.NET ein Job-Scheduling Framework - Integration in eine ASP.NET Core WebApi
 
-Fast jede Anwendung braucht sie, Dienste die gewisse Hintergrundaufgaben durchführen. Diese Dienste müssen dann selbstständig, zyklisch und von der Hauptfunktionalität der Anwendung losgelöst arbeiten. Eine gängige Lösung bieten Cron-Jobs, die aus UNIX Systemen bekannt sind. Die Jobs werden zentral von einem Scheduler ausgeführt.
+Fast jede Anwendung braucht sie, Dienste die gewisse Hintergrundaufgaben durchführen. Diese Dienste müssen selbstständig, zyklisch und von der Hauptfunktionalität der Anwendung losgelöst arbeiten. Eine gängigen Lösungsansatz bieten [Cron-Jobs](https://en.wikipedia.org/wiki/Cron), die aus [UNIX](https://en.wikipedia.org/wiki/Unix) oder unixartigen Betriebssystemen bekannt sind. Die Jobs werden zentral von einem [Scheduler](https://en.wikipedia.org/wiki/Job_scheduler) ausgeführt.
 
-Quartz.NET ist ein bewährtes, quelloffenes und gut dokumentiertes Job-Scheduling Framework, das in verschiedensten Anwendungen eingesetzt werden kann.
+[Quartz.NET](https://www.quartz-scheduler.net/) ist ein bewährtes, quelloffenes und gut dokumentiertes Job-Scheduling Framework, das in verschiedensten Anwendungen eingesetzt werden kann.
 
-Dieser Blogbeitrag zeigt dir, wie du Quartz.NET (kurz Quartz) in eine ASP.NET Core WebApi integrieren kannst. Hauptaugenmerk liegt auf der Interaktion mit einem relationalen Datenbanksystem (hier Postgres) sowie mit Microsofts Objekt-Datenbank-Mapper Entity Framework Core (kurz EF Core).
+Dieser Blogbeitrag zeigt dir, wie du Quartz.NET (kurz Quartz) in eine [ASP.NET Core](https://learn.microsoft.com/en-US/aspnet/core/) WebApi integrieren kannst. Hauptaugenmerk liegt auf der Interaktion mit einem relationalen Datenbanksystem (hier [Postgres](https://www.postgresql.org/)) sowie mit Microsofts Objekt-Datenbank-Mapper [Entity Framework Core](https://docs.microsoft.com/en-us/ef/) (kurz EF Core).
 
 #### **Vorteile**
 Durch die Verwendung von Quartz bieten sich dir die folgenden Vorteile:
 
 * Quartz kann in deine bestehende Anwendungen integriert oder als eigenständiges Programm ausgeführt werden.
-* Ein ausführbarer Job ist eine Klasse, die das `IJob` Interface von Quartz implementiert.
+* Ein ausführbarer Job ist eine Klasse, die das entsprechendes Interface von Quartz implementiert.
 * Der Quartz Scheduler führt einen Job aus, wenn der zugehörige Trigger erfolgt. 
-* Ein Trigger unterstützt eine Vielzahl von Optionen und ist über eine Cron-Expression sekundengenau einstellbar.
+* Ein Trigger unterstützt eine Vielzahl von Optionen und ist über eine [Cron-Expression](https://www.freeformatter.com/cron-expression-generator-quartz.html) sekundengenau einstellbar.
 * Über die Implementierung eines Listeners können Scheduling-Ergebnisse überwacht werden.
 
 #### **Quartz installieren**
@@ -65,7 +65,7 @@ public static IServiceCollection AddCronJobScheduling(this IServiceCollection se
 Folgende Konfigurationen:
 
 * `UseMicrosoftDependencyInjectionJobFactory()`
-* blabla
+* `MaxBatchSize`
 
 Die übrigen Einstellungen sind selbsterklärend und können in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation) nachgelesen werden.
 
@@ -88,10 +88,10 @@ public interface ICronJob : IJob
 
 Neben der `CronExpression` erfordert die Implementierung von `ICronJob` einen `Name`, eine `Group` und eine optionale `Description`. Sämtliche Properties werden später beim Scheduling des Cron-Jobs benötigt.
 
-Beispiele für gültige Cron-Expressions findest du in der Klasse [`CronExpressionDefaults`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronExpressionDefaults.cs) oder in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions).
+Beispiele für gültige Cron-Expressions findest du in der Klasse [`CronExpressionDefaults`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronExpressionDefaults.cs) oder in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions). Außerdem findest du auf der Homepage [freeformater.com](https://www.freeformatter.com/cron-expression-generator-quartz.html) einen Cron Expression Generator und Explainer für Quartz.
 
 #### **Abstrakte Basis-Klasse CronJobBase erstellen**
-Um eine direkte Abhängigkeit der Cron-Jobs auf `ICronJob` und `IJob` bzw. auf Quartz selbst zu vermeiden, wird die abstrakte Basis-Klasse [`CronJobBase`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/CronJobBase.cs) erstellt.
+Um eine direkte Abhängigkeit der Cron-Jobs auf `ICronJob` und `IJob` bzw. auf Quartz selbst zu vermeiden, erstellst du die abstrakte Basis-Klasse [`CronJobBase`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/CronJobBase.cs).
 
 ```csharp
 // File: CronJobBase.cs
@@ -121,7 +121,7 @@ Die Basis-Klasse implementiert die von `IJob` geforderte Methode `Execute()`. In
 Im folgenden Abschnitt implementierst du Cron-Jobs als Kind-Klassen von `CronJobBase`.
 
 #### **Cron-Jobs implementieren**
-Für das Anwendungsbeispiele implementierst du hier zwei Cron-Jobs, welche über den `DbContext` von EF Core Datensätze in einer Postgres Datenbank erstellen und löschen.
+Für das Anwendungsbeispiel implementierst du im Folgenden zwei Cron-Jobs, welche über den `DbContext` von EF Core Datensätze in einer Postgres Datenbank erzeugen und löschen.
 
 Der erste Cron-Job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) erstellt mit jedem Aufruf eine neue [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) und speichert diese in der Datenbank.
 
@@ -154,7 +154,7 @@ public class CreateNoteJob : CronJobBase<CreateNoteJob>
 
 Der Cron-Job `CreateNoteJob` soll alle fünf Sekunden ausgeführt werden, siehe `Every5ThSecondFrom0Through59`.
 
-Zum Hinzufügen und Speichern einer Notiz verwendet `CreateNoteJob` eine Implementierung von [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), welche über die Standard Konstruktor-Injection zugänglich wird.
+Zum Erzeugen und Speichern einer `Note` verwendet `CreateNoteJob` eine Implementierung von [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), welche über die Standard Konstruktor-Injection zugänglich wird.
 
 Die Implementierungen von [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) und [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) werden in der Methode [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) im Service Container des WebHosts registriert.
 
@@ -192,7 +192,7 @@ Der Cron-Job `DeleteNotesJob` soll zu jeder vollen Minute ausgeführt werden, si
 Zwei weitere Cron-Job Implementierungen zeigen die Klassen [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) und [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs).
 
 #### **Cron-Jobs im Service Container registrieren**
-Bevor die Cron-Jobs dem Scheduler hinzugefügt werden registrieren wir sie im Service Container des WebHosts. Dies erfolgt automatisch über die Methode [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs).
+Bevor die Cron-Jobs dem Scheduler hinzugefügt werden registrierst du sie im Service Container des WebHosts. Dies erfolgt automatisch über die Methode [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs).
 
 ```csharp
 // File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (Auszug)
@@ -297,10 +297,11 @@ Nachdem der Quartz Scheduler gestartet wurde, kann auch die WebApi gestartet wer
 // File: Program.cs (Auszug)
 
 app.RunCronJobScheduling();
+
 app.Run();
 ```
 
-#### **Anwendungsbeispiel starten (proof of concept)**
+#### **Anwendungsbeispiel starten (Proof of Concept)**
 Sofern du [Docker](https://www.docker.com/) auf deinem Rechner installiert hast, kannst du den in der Anwendung verwendenten Postgres Datenbankserver innerhalb eines Docker Containers ausführen. Starte dafür einfach den Docker Engine und führe anschließend das Shell-Skript [`run_npgsql_server.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_npgsql_server.sh) aus.
 
 Über den folgenden Connection String kannst du die Anwendungen dann mit der Datenbank verbinden:
@@ -311,18 +312,18 @@ Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_
 
 Wenn du auf deinem Rechner einen Postgres Datenbankserver installiert hast, dann kannst du auch diesen verwenden. Stelle in diesem Fall aber eine entsprechende Konfiguration sicher.
 
-Starte nachschließend die WebApi indem du das Shell-Skript [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh) ausführst.
+Starte nachschließend die WebApi, indem du das Shell-Skript [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh) ausführst.
 
 Wenn du das Anwendungsbeispiel unter Zuhilfenahme von `run_npgsql_server.sh` ausführst, dann kannst du in deinem Browser den Datenbank [Adminer](https://www.adminer.org/en/) über die folgende URL http://localhost:4300 öffnen.
 
-Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden eine neue `Note` erzeugt und gespeichert wird. Zur vollen Minute werden dann alle `Notes` mit Ausnahme der beiden letzten `Notes` gelöscht.
+Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden eine neue `Note` erzeugt und gespeichert wird. Zu jeder vollen Minute werden dann alle `Notes` mit Ausnahme der beiden letzten `Notes` gelöscht.
 
-Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier implementierten Cron-Jobs ausgeführt werden.
+Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier Cron-Job Implementierungen ausgeführt werden.
 
 #### **Fazit**
-Der Blogbeitrag zeigt dir die vollständige Integration des Quartz.NET Frameworks in deine ASP.NET Core WebApi. Die Implementierung eines Cron-Jobs ist einfach möglich. Dafür hast du eine abstrakte Basis-Klasse erstellt. Die Konfiguration der Quartz Services, sowie das Starten des Scheduler ist fast vollständig automatisierbar. Dazu hast du entsprechende Erweiterungsmethoden geschrieben.
+Der Blogbeitrag zeigt dir die vollständige Integration des Quartz.NET Frameworks in deine ASP.NET Core WebApi. Die Implementierung eines Cron-Jobs ist einfach möglich. Dafür hast du eine abstrakte Basis-Klasse erstellt. Die Konfiguration der Quartz Services, sowie das Starten des Schedulers ist vollständig automatisiert. Dazu hast du entsprechende Erweiterungsmethoden geschrieben.
 
-In einem weiteren Schritt könntest du die Scheduling-Ergebnisse überwachen. Dafür bietet sich die Implementierung der Quartz Listener an. Ebenfalls könntest du die Ausführung der einzelnen Cron-Jobs in einer eigenen Datenbanktabelle persistieren. Beide Erweiterungen würden die Qualität deines Scheduling System nochmal deutlich verbessern.
+In einem weiteren Schritt könntest du die Scheduling-Ergebnisse überwachen. Dafür bietet sich die Implementierung entsprechender Quartz Listener an. Ebenfalls könntest du die Ausführung der einzelnen Cron-Jobs in einer zugehörigen Datenbanktabelle persistieren. Hierfür könntest du die Cron-Job Basis-Klasse anpassen. Beide Erweiterungen würden die Qualität deines Job-Scheduling Systems nochmal deutlich verbessern.
 
 Den Code zum Blog findest du auch auf [GitHub](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core).
 

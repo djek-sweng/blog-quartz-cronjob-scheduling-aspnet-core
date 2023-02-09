@@ -6,7 +6,7 @@
 #   password=pasSworD
 #
 # Server connection string:
-#   "Server=localhost; Port=5432; Username=root; Password=pasSworD; Database=cronjob_db;"
+#   "Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_db;"
 #
 # Using psql for debugging:
 #   docker-compose exec -u postgres db bash
@@ -35,7 +35,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: pasSworD
     ports:
-      - "5432:5432"
+      - "4200:5432"
 
   adminer:
     container_name: npgsql-adminer

@@ -2,7 +2,7 @@ namespace CronJobScheduling.Core;
 
 public abstract class CronJobSchedulingStarter
 {
-    public static async Task StartAsync(IApplicationBuilder builder, CancellationToken cancellationToken = default)
+    public static async Task StartSchedulingAsync(IApplicationBuilder builder, CancellationToken cancellationToken = default)
     {
         //
         // Create service scope to resolve injected application services.

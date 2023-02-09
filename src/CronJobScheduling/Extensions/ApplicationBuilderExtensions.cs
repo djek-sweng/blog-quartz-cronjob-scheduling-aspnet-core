@@ -4,7 +4,7 @@ public static class ApplicationBuilderExtensions
 {
     public static IApplicationBuilder RunCronJobScheduling(this IApplicationBuilder builder)
     {
-        CronJobSchedulingStarter.StartAsync(builder).GetAwaiter();
+        CronJobSchedulingStarter.StartSchedulingAsync(builder).GetAwaiter();
 
         return builder;
     }

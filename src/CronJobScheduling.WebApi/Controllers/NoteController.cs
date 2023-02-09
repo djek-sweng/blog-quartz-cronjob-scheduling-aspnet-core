@@ -14,7 +14,7 @@ public class NoteController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateNoteAsync(CancellationToken cancellationToken)
     {
-        var note = Note.Create($"Created by {GetType().Name} at {DateTime.UtcNow}");
+        var note = Note.Create($"Created by '{GetType().Name}' at '{DateTime.UtcNow}'.");
 
         await _noteRepository.AddNoteAsync(note, cancellationToken);
 

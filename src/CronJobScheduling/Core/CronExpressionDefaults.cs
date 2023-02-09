@@ -15,6 +15,7 @@ public static class CronExpressionDefaults
 
     // every second
     public const string EverySecondFrom0Through59 = "0/1 * * * * ? *";
+    public const string Every5ThSecondFrom0Through59 = "0/5 * * * * ? *";
     public const string Every10ThSecondFrom0Through59 = "0/10 * * * * ? *";
 
     // every minute

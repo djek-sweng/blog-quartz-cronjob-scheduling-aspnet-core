@@ -2,9 +2,8 @@ namespace CronJobScheduling.DataStore.Repositories;
 
 public interface INoteRepository
 {
-    Task<IReadOnlyList<Note>> GetNotesAsync(
+    Task<IReadOnlyList<Note>> GetNotesDescendingAsync(
         int skip = 0,
-        int take = int.MaxValue,
         CancellationToken cancellationToken = default);
 
     Task AddNoteAsync(

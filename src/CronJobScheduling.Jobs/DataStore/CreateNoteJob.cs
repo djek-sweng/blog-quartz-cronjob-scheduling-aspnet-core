@@ -4,7 +4,7 @@ public class CreateNoteJob : CronJobBase<CreateNoteJob>
 {
     public override string Description => "Creates one note each time it is executed.";
     public override string Group => CronGroupDefaults.User;
-    public override string CronExpression => CronExpressionDefaults.EverySecondFrom0Through59;
+    public override string CronExpression => CronExpressionDefaults.Every5ThSecondFrom0Through59;
 
     private readonly INoteRepository _noteRepository;
 

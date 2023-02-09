@@ -4,7 +4,7 @@ public class DeleteNotesJob : CronJobBase<DeleteNotesJob>
 {
     public override string Description => "Deletes all notes except the latest 10.";
     public override string Group => CronGroupDefaults.User;
-    public override string CronExpression => CronExpressionDefaults.EverySecondFrom0Through59;
+    public override string CronExpression => CronExpressionDefaults.EveryMinuteAtSecond0;
 
     private readonly INoteRepository _noteRepository;
 
@@ -15,7 +15,7 @@ public class DeleteNotesJob : CronJobBase<DeleteNotesJob>
 
     protected override async Task ExecuteAsync()
     {
-        var notes = await _noteRepository.GetNotesAsync(skip: 10);
+        var notes = await _noteRepository.GetNotesDescendingAsync(skip: 10);
 
         await _noteRepository.RemoveNotesAsync(notes);
     }

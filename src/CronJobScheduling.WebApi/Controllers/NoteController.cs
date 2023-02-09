@@ -20,4 +20,14 @@ public class NoteController : ControllerBase
 
         return Ok(note);
     }
+    
+    [HttpDelete]
+    public async Task<IActionResult> DeleteNotesAsync(CancellationToken cancellationToken)
+    {
+        var notes = await _noteRepository.GetNotesDescendingAsync(skip: 0, cancellationToken);
+
+        await _noteRepository.RemoveNotesAsync(notes, cancellationToken);
+
+        return NoContent();
+    }
 }

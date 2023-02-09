@@ -9,15 +9,13 @@ public class NoteRepository : INoteRepository
         _ctx = ctx;
     }
 
-    public async Task<IReadOnlyList<Note>> GetNotesAsync(
+    public async Task<IReadOnlyList<Note>> GetNotesDescendingAsync(
         int skip = 0,
-        int take = int.MaxValue,
         CancellationToken cancellationToken = default)
     {
         return await _ctx.Notes
-            .OrderBy(n => n.CreatedAt)
+            .OrderByDescending(n => n.CreatedAt)
             .Skip(skip)
-            .Take(take)
             .ToListAsync(cancellationToken);
     }
 

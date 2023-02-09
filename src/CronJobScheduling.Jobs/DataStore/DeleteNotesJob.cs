@@ -1,22 +1,22 @@
 namespace CronJobScheduling.Jobs.DataStore;
 
-public class CreateNoteJob : CronJobBase<CreateNoteJob>
+public class DeleteNotesJob : CronJobBase<DeleteNotesJob>
 {
-    public override string Description => "Creates one note each time it is executed.";
+    public override string Description => "Deletes all notes except the latest 10.";
     public override string Group => CronGroupDefaults.User;
     public override string CronExpression => CronExpressionDefaults.EverySecondFrom0Through59;
 
     private readonly INoteRepository _noteRepository;
 
-    public CreateNoteJob(INoteRepository noteRepository)
+    public DeleteNotesJob(INoteRepository noteRepository)
     {
         _noteRepository = noteRepository;
     }
 
     protected override async Task ExecuteAsync()
     {
-        var note = Note.Create($"Created by '{Name}' at '{DateTime.UtcNow}'.");
+        var notes = await _noteRepository.GetNotesAsync(skip: 10);
 
-        await _noteRepository.AddNoteAsync(note);
+        await _noteRepository.RemoveNotesAsync(notes);
     }
 }

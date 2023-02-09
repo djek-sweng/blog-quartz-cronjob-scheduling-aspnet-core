@@ -15,7 +15,7 @@ public class LoggingJob : CronJobBase<LoggingJob>
 
     protected override Task ExecuteAsync()
     {
-        _logger.LogInformation("[{UtcNow}] {Name} is executing", DateTime.UtcNow, Name);
+        _logger.LogInformation("[{UtcNow}] {Name} is executed", DateTime.UtcNow, Name);
 
         return Task.CompletedTask;
     }

@@ -158,7 +158,7 @@ Zum Erzeugen und Speichern einer `Note` verwendet `CreateNoteJob` eine Implement
 
 Die Implementierungen von [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) und [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) werden in der Methode [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) im Service Container des WebHosts registriert.
 
-Der zweite Cron-Job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) löscht mit jeden Aufruf alle `Notes` mit Ausnahme der beiden letzten `Notes`.
+Der zweite Cron-Job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) löscht mit jedem Aufruf alle `Notes` mit Ausnahme der beiden letzten `Notes`.
 
 ```csharp
 // File: DeleteNotesJob.cs

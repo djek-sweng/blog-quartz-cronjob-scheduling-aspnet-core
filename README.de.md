@@ -1,6 +1,6 @@
 ### Quartz.NET Job-Scheduling Framework - Integration in eine ASP.NET Core WebApi
 
-Fast jede Anwendung braucht sie, Dienste die gewisse Hintergrundaufgaben durchführen. Diese Dienste müssen selbstständig, zyklisch und von der Hauptfunktionalität der Anwendung losgelöst arbeiten. Einen gängigen Lösungsansatz bieten [Cron-Jobs](https://en.wikipedia.org/wiki/Cron), die aus [UNIX](https://en.wikipedia.org/wiki/Unix) oder unixartigen Betriebssystemen bekannt sind. Die Jobs werden zentral von einem [Scheduler](https://en.wikipedia.org/wiki/Job_scheduler) ausgeführt.
+Fast jede Anwendung braucht sie, Dienste die gewisse Hintergrundaufgaben durchführen. Diese Dienste müssen selbstständig, zyklisch und von der Hauptfunktionalität der Anwendung losgelöst arbeiten. Einen gängigen Lösungsansatz bieten [Cron-Jobs](https://en.wikipedia.org/wiki/Cron), die aus [UNIX](https://en.wikipedia.org/wiki/Unix) oder unixoiden Betriebssystemen bekannt sind. Die Jobs werden zentral von einem [Scheduler](https://en.wikipedia.org/wiki/Job_scheduler) aufgerufen.
 
 [Quartz.NET](https://www.quartz-scheduler.net/) ist ein bewährtes, quelloffenes und gut dokumentiertes Job-Scheduling Framework, das in verschiedensten Anwendungen eingesetzt werden kann.
 

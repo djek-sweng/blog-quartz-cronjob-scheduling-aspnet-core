@@ -231,6 +231,7 @@ public static IServiceCollection AddCronJobs(
 Die Methode registriert mittels `Reflection` alle Cron-Jobs des gegebenen `Assembly`.
 
 #### **Cron-Job Scheduling starten**
+
 Im letzten Schritt wird der Quartz Scheduler mit den implementierten Cron-Jobs bestückt und gestartet. Dies erfolgt automatisch über die Methode [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
 
 ```csharp

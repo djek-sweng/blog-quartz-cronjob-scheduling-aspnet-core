@@ -230,3 +230,82 @@ public static IServiceCollection AddCronJobs(
 
 The method uses `Reflection` to register all cron jobs of the given `Assembly`.
 
+#### **Start cron job scheduling**
+
+In the last step, the Quartz Scheduler is populated with the implemented cron jobs and started. This is done automatically via the method [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
+
+```csharp
+// File: CronJobSchedulingStarter.cs (excerpt)
+
+public static async Task StartSchedulingAsync(
+    IApplicationBuilder builder,
+    CancellationToken cancellationToken = default)
+{
+    //
+    // Create service scope to resolve injected application services.
+    //
+    using var scope = builder.ApplicationServices.CreateScope();
+
+    //
+    // Get cron jobs from service container.
+    //
+    var cronJobs = scope.ServiceProvider
+        .GetServices<ICronJob>()
+        .ToList();
+
+    if (cronJobs.Count < 1)
+    {
+        return;
+    }
+
+    EnsureValidCronJobs(cronJobs);
+
+    //
+    // Get Quartz scheduler factory from service container and build scheduler.
+    //
+    var scheduler = await scope.ServiceProvider
+        .GetRequiredService<ISchedulerFactory>()
+        .GetScheduler(cancellationToken);
+
+    //
+    // Create dictionary with jobs and their triggers for scheduler.
+    //
+    var jobsAndTriggers = new Dictionary<IJobDetail, IReadOnlyCollection<ITrigger>>();
+
+    foreach (var cronJob in cronJobs)
+    {
+        var jobDetail = JobBuilder.Create(cronJob.GetType())
+            .WithIdentity(cronJob.Name, cronJob.Group)
+            .WithDescription(cronJob.Description)
+            .Build();
+
+        var trigger = TriggerBuilder.Create()
+            .WithIdentity($"trigger.{cronJob.Name}", "standard")
+            .WithCronSchedule(cronJob.CronExpression)
+            .Build();
+
+        jobsAndTriggers.Add(jobDetail, new[] { trigger });
+    }
+
+    //
+    // Finish scheduling.
+    //
+    await DeleteExistingJobFromScheduler(scheduler, jobsAndTriggers.Keys, cancellationToken);
+
+    await scheduler.ScheduleJobs(jobsAndTriggers, replace: false, cancellationToken);
+    await scheduler.Start(cancellationToken);
+}
+```
+
+The cron jobs and the Quartz scheduler factory are obtained from the service container. The scheduler factory creates the scheduler, which is then populated with a dictionary of pairs of jobs and triggers. The triggers are configured with the associated CronExpressions. Finally, the scheduler is started.
+
+After the Quartz scheduler has been started, the WebApi can also be started. The last two lines of the file[`Program.cs`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.WebApi/Program.cs) start the scheduler and WebApi.
+
+```csharp
+// File: Program.cs (excerpt)
+
+app.RunCronJobScheduling();
+
+app.Run();
+```
+

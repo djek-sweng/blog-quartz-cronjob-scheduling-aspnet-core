@@ -73,7 +73,8 @@ Folgende Konfigurationen im Detail:
 Die übrigen Einstellungen sind selbsterklärend und können in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation) nachgelesen werden.
 
 #### **Interface ICronJob erstellen**
-Die im Blog implementierten Jobs sollen als Cron-Job mittels Cron-Expression ausgeführt werden. Dafür wird das Interface [`ICronJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/ICronJob.cs) erstellt, welches das Quartz Standard-Interface `IJob` erweitert. 
+
+Die im Blog implementierten Jobs sollen als Cron-Job mittels Cron-Expression ausgeführt werden. Dafür wird das Interface [`ICronJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/ICronJob.cs) erstellt, welches das Quartz Standard-Interface `IJob` erweitert.
 
 ```csharp
 // File: ICronJob.cs

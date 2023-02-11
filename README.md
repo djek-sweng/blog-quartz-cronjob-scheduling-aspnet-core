@@ -72,3 +72,25 @@ The following configurations in detail:
 
 The other settings are self-explanatory and can be found in the Quartz [documentation](https://www.quartz-scheduler.net/documentation).
 
+#### **Create ICronJob interface**
+
+The jobs implemented in the blog are to be executed as a cron job using cron expression. For this purpose, the interface [`ICronJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/ICronJob.cs) is created, which extends the Quartz standard interface `IJob`.
+
+```csharp
+// File: ICronJob.cs
+
+namespace CronJobScheduling.Abstractions;
+
+public interface ICronJob : IJob
+{
+    string Name { get; }
+    string Group { get; }
+    string CronExpression { get; }
+    string Description => string.Empty;
+}
+```
+
+Besides the `CronExpression` the implementation of `ICronJob` requires a `Name`, a `Group` and an optional `Description`. All properties are needed later when scheduling the cron job.
+
+You can find examples of valid cron expressions in the class [`CronExpressionDefaults`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronExpressionDefaults.cs) or in the Quartz [documentation](https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions). You can also find a cron expression generator and explainer for Quartz on the homepage [freeformater.com](https://www.freeformatter.com/cron-expression-generator-quartz.html).
+

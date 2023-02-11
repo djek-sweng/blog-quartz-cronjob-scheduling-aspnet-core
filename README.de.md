@@ -325,13 +325,9 @@ Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_
 
 Wenn du auf deinem Rechner einen Postgres Datenbankserver installiert hast, dann kannst du auch diesen verwenden. Stelle in diesem Fall eine entsprechende Konfiguration sicher.
 
-Starte nachschließend die WebApi, indem du das Shell-Skript [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh) ausführst.
+Starte nachschließend die WebApi, indem du das Shell-Skript [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh) ausführst. Wenn du für das Anwendungsbeispiel das Shell-Skript `run_npgsql_server.sh` verwendest, dann kannst du in deinem Browser den Datenbank [Adminer](https://www.adminer.org/en/) über die folgende URL http://localhost:4300 öffnen.
 
-Wenn du für das Anwendungsbeispiel das Shell-Skript `run_npgsql_server.sh` verwendest, dann kannst du in deinem Browser den Datenbank [Adminer](https://www.adminer.org/en/) über die folgende URL http://localhost:4300 öffnen.
-
-Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden ein neuer `Note` Datensatz erzeugt und gespeichert wird. Zu jeder vollen Minute werden dann alle `Note` Datensätze mit Ausnahme der beiden letzten `Note` Datensätze gelöscht.
-
-Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier Cron-Job Implementierungen ausgeführt werden.
+Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden ein neuer `Note` Datensatz erzeugt und gespeichert wird. Zu jeder vollen Minute werden dann alle `Note` Datensätze mit Ausnahme der beiden letzten `Note` Datensätze gelöscht. Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier Cron-Job Implementierungen ausgeführt werden.
 
 #### **Fazit**
 

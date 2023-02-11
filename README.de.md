@@ -126,9 +126,10 @@ Die Basis-Klasse implementiert die von `IJob` geforderte Methode `Execute()`. In
 Im folgenden Abschnitt implementierst du Cron-Jobs als Kind-Klassen von `CronJobBase`.
 
 #### **Cron-Jobs implementieren**
+
 Für das Anwendungsbeispiel implementierst du im Folgenden zwei Cron-Jobs, welche über den `DbContext` von EF Core Datensätze in einer Postgres Datenbank erzeugen und löschen.
 
-Der erste Cron-Job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) erstellt mit jedem Aufruf eine neue [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) und speichert diese in der Datenbank.
+Der erste Cron-Job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) erstellt mit jedem Aufruf einen neuen [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) Datensatz und speichert diesen in der Datenbank.
 
 ```csharp
 // File: CreateNoteJob.cs
@@ -159,11 +160,11 @@ public class CreateNoteJob : CronJobBase<CreateNoteJob>
 
 Der Cron-Job `CreateNoteJob` soll alle fünf Sekunden ausgeführt werden, siehe `Every5ThSecondFrom0Through59`.
 
-Zum Erzeugen und Speichern einer `Note` verwendet `CreateNoteJob` eine Implementierung von [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), welche über die Standard Konstruktor-Injection zugänglich wird.
+Zum Erzeugen und Speichern eines `Note` Datensatzes verwendet `CreateNoteJob` eine Implementierung von [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), welche über die Standard Konstruktor-Injection zugänglich wird.
 
 Die Implementierungen von [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) und [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) werden in der Methode [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) im Service Container des WebHosts registriert.
 
-Der zweite Cron-Job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) löscht mit jedem Aufruf alle `Notes` mit Ausnahme der beiden letzten `Notes`.
+Der zweite Cron-Job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) löscht mit jedem Aufruf alle `Note` Datensätze mit Ausnahme der beiden letzten `Note` Datensätze.
 
 ```csharp
 // File: DeleteNotesJob.cs
@@ -194,7 +195,7 @@ public class DeleteNotesJob : CronJobBase<DeleteNotesJob>
 
 Der Cron-Job `DeleteNotesJob` soll zu jeder vollen Minute ausgeführt werden, siehe `EveryMinuteAtSecond0`.
 
-Zwei weitere Cron-Job Implementierungen zeigen die Klassen [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) und [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs).
+Zwei weitere Cron-Job Implementierungen kannst du dir in den Klassen [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) und [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs) anschauen.
 
 #### **Cron-Jobs im Service Container registrieren**
 Bevor die Cron-Jobs dem Scheduler hinzugefügt werden registrierst du sie im Service Container des WebHosts. Dies erfolgt automatisch über die Methode [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs).

@@ -125,3 +125,75 @@ The base class implements the `Execute()` method required by `IJob`. Inside `Exe
 
 In the following section you implement cron jobs as child classes of `CronJobBase`.
 
+#### **Implement cron jobs**
+
+For the application example, you implement two cron jobs below, which create and delete records in a Postgres database via the `DbContext` of EF Core.
+
+The first cron job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) creates a new [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) record with each call and stores it in the database.
+
+```csharp
+// File: CreateNoteJob.cs
+
+namespace CronJobScheduling.Jobs.DataStore;
+
+public class CreateNoteJob : CronJobBase<CreateNoteJob>
+{
+    public override string Description => "Creates one note each time it is executed.";
+    public override string Group => CronGroupDefaults.User;
+    public override string CronExpression => CronExpressionDefaults.Every5ThSecondFrom0Through59;
+
+    private readonly INoteRepository _noteRepository;
+
+    public CreateNoteJob(INoteRepository noteRepository)
+    {
+        _noteRepository = noteRepository;
+    }
+
+    protected override async Task InvokeAsync(CancellationToken cancellationToken)
+    {
+        var note = Note.Create($"Created by '{Name}' at '{DateTime.UtcNow}'.");
+
+        await _noteRepository.AddNoteAsync(note, cancellationToken);
+    }
+}
+```
+
+The cron job `CreateNoteJob` should be executed every five seconds, see `Every5ThSecondFrom0Through59`.
+
+To create and store a `Note` record, `CreateNoteJob` uses an implementation of [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), which is accessed via the standard constructor injection.
+
+The implementations of [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) and [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) are registered in the method [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) in the WebHost's service container.
+
+The second cron job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) deletes all `Note` records except the last two `Note` records with each call.
+
+```csharp
+// File: DeleteNotesJob.cs
+
+namespace CronJobScheduling.Jobs.DataStore;
+
+public class DeleteNotesJob : CronJobBase<DeleteNotesJob>
+{
+    public override string Description => "Deletes all notes except the two latest notes.";
+    public override string Group => CronGroupDefaults.User;
+    public override string CronExpression => CronExpressionDefaults.EveryMinuteAtSecond0;
+
+    private readonly INoteRepository _noteRepository;
+
+    public DeleteNotesJob(INoteRepository noteRepository)
+    {
+        _noteRepository = noteRepository;
+    }
+
+    protected override async Task InvokeAsync(CancellationToken cancellationToken)
+    {
+        var notes = await _noteRepository.GetNotesDescendingAsync(skip: 2, cancellationToken);
+
+        await _noteRepository.RemoveNotesAsync(notes, cancellationToken);
+    }
+}
+```
+
+The cron job `DeleteNotesJob` should be executed every full minute, see `EveryMinuteAtSecond0`.
+
+You can look at two other cron job implementations in the classes [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) and [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs).
+

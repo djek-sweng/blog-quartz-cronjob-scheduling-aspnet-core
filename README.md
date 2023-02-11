@@ -129,9 +129,9 @@ In the following section you implement cron jobs as child classes of `CronJobBas
 
 #### **Implement cron jobs**
 
-For the application example, you implement two cron jobs below, which create and delete records in a Postgres database via the `DbContext` of EF Core.
+For the application example, you implement two cron jobs below, which create and delete records in a database via the `DbContext` of EF Core.
 
-The first cron job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) creates a new [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) record with each call and stores it in the database.
+The first cron job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) creates a new record [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) with each call and stores it in the database.
 
 ```csharp
 // File: CreateNoteJob.cs

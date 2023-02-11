@@ -129,7 +129,7 @@ Im folgenden Abschnitt implementierst du Cron-Jobs als Kind-Klassen von `CronJob
 
 #### **Cron-Jobs implementieren**
 
-Für das Anwendungsbeispiel implementierst du im Folgenden zwei Cron-Jobs, welche über den `DbContext` von EF Core Datensätze in einer Postgres Datenbank erzeugen und löschen.
+Für das Anwendungsbeispiel implementierst du im Folgenden zwei Cron-Jobs, welche über den `DbContext` von EF Core Datensätze in einer Datenbank erzeugen und löschen.
 
 Der erste Cron-Job [`CreateNoteJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/CreateNoteJob.cs) erstellt mit jedem Aufruf einen neuen [`Note`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Models/Note.cs) Datensatz und speichert diesen in der Datenbank.
 

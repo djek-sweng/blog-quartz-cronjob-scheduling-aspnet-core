@@ -38,7 +38,9 @@ In the file [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quart
 Before the WebApi with integrated Quartz can be started, the Quartz services must be configured. You can find the configuration in the method [`AddCronJobScheduling()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs), which is called in the file [`Program.cs`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.WebApi/Program.cs) as an extension of [`IServiceCollection`](https://learn.microsoft.com/de-de/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection).
 
 ```csharp
-// File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (excerpt)
+// File: ServiceCollectionExtensions.cs (excerpt)
+
+namespace CronJobScheduling.Extensions;
 
 public static IServiceCollection AddCronJobScheduling(this IServiceCollection services)
 {
@@ -202,7 +204,9 @@ You can look at two other cron job implementations in the classes [`LoggingJob`]
 Before adding the cron jobs to the scheduler, you register them in the service container of the WebHost. This is done automatically using the [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs) method.
 
 ```csharp
-// File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (Auszug)
+// File: ServiceCollectionExtensions.cs (excerpt)
+
+namespace CronJobScheduling.Extensions;
 
 public static IServiceCollection AddCronJobs(
     this IServiceCollection services,

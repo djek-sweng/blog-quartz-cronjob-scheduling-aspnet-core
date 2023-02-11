@@ -198,6 +198,7 @@ Der Cron-Job `DeleteNotesJob` soll zu jeder vollen Minute ausgeführt werden, si
 Zwei weitere Cron-Job Implementierungen kannst du dir in den Klassen [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) und [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs) anschauen.
 
 #### **Cron-Jobs im Service Container registrieren**
+
 Bevor die Cron-Jobs dem Scheduler hinzugefügt werden registrierst du sie im Service Container des WebHosts. Dies erfolgt automatisch über die Methode [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs).
 
 ```csharp

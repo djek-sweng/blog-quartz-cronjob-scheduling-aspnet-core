@@ -197,3 +197,36 @@ The cron job `DeleteNotesJob` should be executed every full minute, see `EveryMi
 
 You can look at two other cron job implementations in the classes [`LoggingJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/Logging/LoggingJob.cs) and [`SchedulerAliveJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Jobs/SchedulerAliveJob.cs).
 
+#### **Register cron jobs in the service container**
+
+Before adding the cron jobs to the scheduler, you register them in the service container of the WebHost. This is done automatically using the [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs) method.
+
+```csharp
+// File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (Auszug)
+
+public static IServiceCollection AddCronJobs(
+    this IServiceCollection services,
+    Assembly assembly)
+{
+    var abstraction = typeof(ICronJob);
+    var baseType = typeof(CronJobBase<>);
+
+    var implementations = assembly.GetTypes()
+        .Where(t =>
+            (t.IsAssignableTo(abstraction)
+             || t.BaseType == baseType)
+            && t.IsClass
+            && t.IsAbstract == false)
+        .ToList();
+
+    foreach (var implementation in implementations)
+    {
+        services.AddTransient(abstraction, implementation);
+    }
+
+    return services;
+}
+```
+
+The method uses `Reflection` to register all cron jobs of the given `Assembly`.
+

@@ -331,7 +331,7 @@ A look into the database table `Notes` shows that every five seconds a new `Note
 
 #### **Conclusion**
 
-The blog post shows you the full integration of the Quartz.NET framework into your ASP.NET Core WebApi. Implementing a cron job is easy. For this you have created an abstract base class. The configuration of the Quartz services, as well as the starting of the scheduler is fully automated. For this you have written appropriate extension methods.
+This blog post shows you the full integration of the Quartz.NET framework into your ASP.NET Core WebApi. Implementing a cron job is easy. For this you have created an abstract base class. The configuration of the Quartz services, as well as the starting of the scheduler is fully automated. For this you have written appropriate extension methods.
 
 In a further step you could monitor the scheduling results. For this purpose, the implementation of appropriate Quartz listeners is a good idea. You could also persist the execution of the individual cron jobs in a corresponding database table. For this you could adapt the cron job base class. Both extensions would improve the quality of your job scheduling system significantly.
 

@@ -309,3 +309,23 @@ app.RunCronJobScheduling();
 app.Run();
 ```
 
+#### **Execute application example (proof of concept)**
+
+If you have [Docker](https://www.docker.com/) installed on your machine, you can run the Postgres database server used in the application inside a Docker container. Simply start the Docker Engine and then run the shell script [`run_npgsql_server.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_npgsql_server.sh).
+
+You can then use the following connection string to connect the applications to the database:
+
+```
+Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_db;
+```
+
+If you have a Postgres database server installed on your computer, you can also use it. In this case, ensure an appropriate configuration.
+
+Afterwards start the WebApi by executing the shell script [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh).
+
+If you use the shell script `run_npgsql_server.sh` for the application example, then you can open the database [Adminer](https://www.adminer.org/en/) in your browser using the following URL http://localhost:4300.
+
+A look into the database table `Notes` shows that every five seconds a new `Note` record is created and stored. At every full minute, all `Note` records are then deleted except for the last two `Note` records.
+
+Furthermore, a look into the terminal of the WebApi shows that all four cron job implementations are executed.
+

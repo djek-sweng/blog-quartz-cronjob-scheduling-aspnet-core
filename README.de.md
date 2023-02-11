@@ -309,7 +309,8 @@ app.RunCronJobScheduling();
 app.Run();
 ```
 
-#### **Anwendungsbeispiel starten (Proof of Concept)**
+#### **Anwendungsbeispiel ausführen (Proof of Concept)**
+
 Sofern du [Docker](https://www.docker.com/) auf deinem Rechner installiert hast, kannst du den in der Anwendung verwendenten Postgres Datenbankserver innerhalb eines Docker Containers ausführen. Starte dafür einfach den Docker Engine und führe anschließend das Shell-Skript [`run_npgsql_server.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_npgsql_server.sh) aus.
 
 Über den folgenden Connection String kannst du die Anwendungen dann mit der Datenbank verbinden:
@@ -318,13 +319,13 @@ Sofern du [Docker](https://www.docker.com/) auf deinem Rechner installiert hast,
 Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_db;
 ```
 
-Wenn du auf deinem Rechner einen Postgres Datenbankserver installiert hast, dann kannst du auch diesen verwenden. Stelle in diesem Fall aber eine entsprechende Konfiguration sicher.
+Wenn du auf deinem Rechner einen Postgres Datenbankserver installiert hast, dann kannst du auch diesen verwenden. Stelle in diesem Fall eine entsprechende Konfiguration sicher.
 
 Starte nachschließend die WebApi, indem du das Shell-Skript [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh) ausführst.
 
-Wenn du das Anwendungsbeispiel unter Zuhilfenahme von `run_npgsql_server.sh` ausführst, dann kannst du in deinem Browser den Datenbank [Adminer](https://www.adminer.org/en/) über die folgende URL http://localhost:4300 öffnen.
+Wenn du für das Anwendungsbeispiel das Shell-Skript `run_npgsql_server.sh` verwendest, dann kannst du in deinem Browser den Datenbank [Adminer](https://www.adminer.org/en/) über die folgende URL http://localhost:4300 öffnen.
 
-Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden eine neue `Note` erzeugt und gespeichert wird. Zu jeder vollen Minute werden dann alle `Notes` mit Ausnahme der beiden letzten `Notes` gelöscht.
+Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden ein neuer `Note` Datensatz erzeugt und gespeichert wird. Zu jeder vollen Minute werden dann alle `Note` Datensätze mit Ausnahme der beiden letzten `Note` Datensätze gelöscht.
 
 Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier Cron-Job Implementierungen ausgeführt werden.
 

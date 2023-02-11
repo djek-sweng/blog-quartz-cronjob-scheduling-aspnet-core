@@ -33,3 +33,42 @@ dotnet add package Quartz.Extensions.Hosting
 
 In the file [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/Directory.Build.targets) you will then find all the required packages you need to install for the application shown here.
 
+#### **Configure Quartz**
+
+Before the WebApi with integrated Quartz can be started, the Quartz services must be configured. You can find the configuration in the method [`AddCronJobScheduling()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs), which is called in the file [`Program.cs`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.WebApi/Program.cs) as an extension of [`IServiceCollection`](https://learn.microsoft.com/de-de/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection).
+
+```csharp
+// File: CronJobScheduling.Extensions.ServiceCollectionExtensions.cs (excerpt)
+
+public static IServiceCollection AddCronJobScheduling(this IServiceCollection services)
+{
+    services.AddQuartz(options =>
+    {
+        options.SchedulerId = "Scheduler.Core";
+        options.SchedulerName = "Quartz.AspNetCore.Scheduler";
+
+        options.UseMicrosoftDependencyInjectionJobFactory();
+
+        options.MaxBatchSize = 5;
+        options.InterruptJobsOnShutdown = true;
+        options.InterruptJobsOnShutdownWithWait = true;
+    });
+
+    services.AddQuartzHostedService(options =>
+    {
+        options.StartDelay = TimeSpan.FromMilliseconds(1_000);
+        options.AwaitApplicationStarted = true;
+        options.WaitForJobsToComplete = true;
+    });
+
+    return services;
+}
+```
+
+The following configurations in detail:
+
+* `UseMicrosoftDependencyInjectionJobFactory()`: Integrates job instantiation using the Microsoft dependency injection system.
+* `MaxBatchSize`: The maximum number of triggers that a scheduler node is allowed to acquire (for firing) at once. Default value is 1.
+
+The other settings are self-explanatory and can be found in the Quartz [documentation](https://www.quartz-scheduler.net/documentation).
+

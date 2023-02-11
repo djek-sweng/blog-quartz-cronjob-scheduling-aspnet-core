@@ -34,6 +34,7 @@ dotnet add package Quartz.Extensions.Hosting
 In der Datei [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/Directory.Build.targets) findest du dann alle notwendigen Pakete, die du für die hier gezeigte Anwendung installieren musst.
 
 #### **Quartz konfigurieren**
+
 Bevor die WebApi mit integriertem Quartz gestartet werden kann, müssen die Quartz Services konfiguriert werden. Du findest die Konfiguration in der Methode [`AddCronJobScheduling()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs), welche in der Datei [`Program.cs`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.WebApi/Program.cs) als Erweiterung von [`IServiceCollection`](https://learn.microsoft.com/de-de/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection) aufgerufen wird.
 
 ```csharp
@@ -64,10 +65,10 @@ public static IServiceCollection AddCronJobScheduling(this IServiceCollection se
 }
 ```
 
-Folgende Konfigurationen:
+Folgende Konfigurationen im Detail:
 
-* `UseMicrosoftDependencyInjectionJobFactory()`
-* `MaxBatchSize`
+* `UseMicrosoftDependencyInjectionJobFactory()`: Integriert die Instanziierung von Jobs unter Verwendung des Microsoft Dependency Injection Systems.
+* `MaxBatchSize`: Die maximale Anzahl von Triggern, die ein Scheduler auf einmal erfassen (und starten) darf. Der Standardwert ist 1.
 
 Die übrigen Einstellungen sind selbsterklärend und können in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation) nachgelesen werden.
 

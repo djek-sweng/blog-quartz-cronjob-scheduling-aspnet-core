@@ -330,6 +330,7 @@ Ein Blick in die Datenbank Tabelle `Notes` zeigt, dass alle fünf Sekunden ein n
 Weiterhin zeigt ein Blick ins Terminal der WebApi, dass alle vier Cron-Job Implementierungen ausgeführt werden.
 
 #### **Fazit**
+
 Der Blogbeitrag zeigt dir die vollständige Integration des Quartz.NET Frameworks in deine ASP.NET Core WebApi. Die Implementierung eines Cron-Jobs ist einfach möglich. Dafür hast du eine abstrakte Basis-Klasse erstellt. Die Konfiguration der Quartz Services, sowie das Starten des Schedulers ist vollständig automatisiert. Dazu hast du entsprechende Erweiterungsmethoden geschrieben.
 
 In einem weiteren Schritt könntest du die Scheduling-Ergebnisse überwachen. Dafür bietet sich die Implementierung entsprechender Quartz Listener an. Ebenfalls könntest du die Ausführung der einzelnen Cron-Jobs in einer zugehörigen Datenbanktabelle persistieren. Hierfür könntest du die Cron-Job Basis-Klasse anpassen. Beide Erweiterungen würden die Qualität deines Job-Scheduling Systems nochmal deutlich verbessern.

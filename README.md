@@ -8,7 +8,7 @@ This blog post shows you how to integrate Quartz.NET (Quartz for short) into you
 
 #### **Advantages**
 
-Using quartz gives you the following advantages:
+Using Quartz gives you the following advantages:
 
 * Quartz can be integrated into your existing applications or run as a standalone program.
 * An executable job is a class that implements a Quartz job interface.

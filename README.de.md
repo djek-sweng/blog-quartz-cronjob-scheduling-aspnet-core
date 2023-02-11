@@ -7,11 +7,12 @@ Fast jede Anwendung braucht sie, Dienste die gewisse Hintergrundaufgaben durchf�
 Dieser Blogbeitrag zeigt dir, wie du Quartz.NET (kurz Quartz) in deine [ASP.NET Core](https://learn.microsoft.com/en-US/aspnet/core/) WebApi integrieren kannst. In einem Anwendungsbeispiel (Proof of Concept) erprobst du die Interaktion von Quartz mit einem relationalen Datenbanksystem (hier [Postgres](https://www.postgresql.org/)) sowie mit Microsofts Objekt-Datenbank-Mapper [Entity Framework Core](https://docs.microsoft.com/en-us/ef/) (kurz EF Core).
 
 #### **Vorteile**
+
 Durch die Verwendung von Quartz bieten sich dir die folgenden Vorteile:
 
 * Quartz kann in deine bestehende Anwendungen integriert oder als eigenständiges Programm ausgeführt werden.
-* Ein ausführbarer Job ist eine Klasse, die das entsprechendes Interface von Quartz implementiert.
-* Der Quartz Scheduler führt einen Job aus, wenn der zugehörige Trigger erfolgt. 
+* Ein ausführbarer Job ist eine Klasse, die ein Job Interface von Quartz implementiert.
+* Der Quartz Scheduler führt einen Job aus, wenn der zugehörige Trigger erfolgt.
 * Ein Trigger unterstützt eine Vielzahl von Optionen und ist über eine [Cron-Expression](https://www.freeformatter.com/cron-expression-generator-quartz.html) sekundengenau einstellbar.
 * Über die Implementierung eines Listeners können Scheduling-Ergebnisse überwacht werden.
 

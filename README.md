@@ -16,3 +16,20 @@ Using quartz gives you the following advantages:
 * A trigger supports a variety of options and can be adjusted to the second via a [cron expression](https://www.freeformatter.com/cron-expression-generator-quartz.html).
 * Scheduling results can be monitored via the implementation of a listener.
 
+#### **Install Quartz**
+
+The shell script [`dotnet_add_quartz.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/tools/dotnet/dotnet_add_quartz.sh) shows you how to install Quartz in your project environment.
+
+```sh
+#!/bin/sh
+
+# File: dotnet_add_quartz.sh
+
+dotnet add package Microsoft.Extensions.Hosting
+dotnet add package Quartz
+dotnet add package Quartz.Extensions.DependencyInjection
+dotnet add package Quartz.Extensions.Hosting
+```
+
+In the file [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/Directory.Build.targets) you will then find all the required packages you need to install for the application shown here.
+

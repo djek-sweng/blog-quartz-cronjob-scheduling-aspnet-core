@@ -17,6 +17,7 @@ Durch die Verwendung von Quartz bieten sich dir die folgenden Vorteile:
 * Über die Implementierung eines Listeners können Scheduling-Ergebnisse überwacht werden.
 
 #### **Quartz installieren**
+
 Das Shell-Skript [`dotnet_add_quartz.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/tools/dotnet/dotnet_add_quartz.sh) zeigt dir, wie du Quartz in deiner Projektumgebung installierst.
 
 ```sh

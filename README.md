@@ -201,7 +201,7 @@ You can look at two other cron job implementations in the classes [`LoggingJob`]
 
 #### **Register cron jobs in the service container**
 
-Before adding the cron jobs to the scheduler, you register them in the service container of the WebHost. This is done automatically using the [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs) method.
+Before adding the cron jobs to the scheduler, you register them in the service container of the WebHost. This is done automatically using the method [`AddCronJobs()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Extensions/ServiceCollectionExtensions.cs).
 
 ```csharp
 // File: ServiceCollectionExtensions.cs (excerpt)

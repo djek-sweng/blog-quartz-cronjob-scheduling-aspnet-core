@@ -162,9 +162,9 @@ public class CreateNoteJob : CronJobBase<CreateNoteJob>
 
 The cron job `CreateNoteJob` should be executed every five seconds, see `Every5ThSecondFrom0Through59`.
 
-To create and store a `Note` record, `CreateNoteJob` uses an implementation of [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), which is accessed via the standard constructor injection.
+To create and store a `Note` record, class `CreateNoteJob` uses an implementation of [`INoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/Interfaces/INoteRepository.cs), which is accessed via the standard constructor injection.
 
-The implementations of [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) and [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) are registered in the method [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) in the WebHost's service container.
+The implementations of [`NoteRepository`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Repositories/NoteRepository.cs) and [`ApplicationDbContext`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Data/ApplicationDbContext.cs) are registered via method [`AddCronJobSchedulingDataStore()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.DataStore/Extensions/ServiceCollectionExtensions.cs) in the WebHost's service container.
 
 The second cron job [`DeleteNotesJob`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.Jobs/DataStore/DeleteNotesJob.cs) deletes all `Note` records except the last two `Note` records with each call.
 

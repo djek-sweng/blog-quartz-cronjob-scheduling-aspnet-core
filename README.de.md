@@ -4,7 +4,7 @@ Fast jede Anwendung braucht sie, Dienste die gewisse Hintergrundaufgaben durchf√
 
 [Quartz.NET](https://www.quartz-scheduler.net/) ist ein bew√§hrtes, quelloffenes und gut dokumentiertes Job-Scheduling Framework, das in verschiedensten Anwendungen eingesetzt werden kann.
 
-Dieser Blogbeitrag zeigt dir, wie du Quartz.NET (kurz Quartz) in eine [ASP.NET Core](https://learn.microsoft.com/en-US/aspnet/core/) WebApi integrieren kannst. Hauptaugenmerk liegt auf der Interaktion mit einem relationalen Datenbanksystem (hier [Postgres](https://www.postgresql.org/)) sowie mit Microsofts Objekt-Datenbank-Mapper [Entity Framework Core](https://docs.microsoft.com/en-us/ef/) (kurz EF Core).
+Dieser Blogbeitrag zeigt dir, wie du Quartz.NET (kurz Quartz) in deine [ASP.NET Core](https://learn.microsoft.com/en-US/aspnet/core/) WebApi integrieren kannst. In einem Anwendungsbeispiel (Proof of Concept) erprobst du die Interaktion von Quartz mit einem relationalen Datenbanksystem (hier [Postgres](https://www.postgresql.org/)) sowie mit Microsofts Objekt-Datenbank-Mapper [Entity Framework Core](https://docs.microsoft.com/en-us/ef/) (kurz EF Core).
 
 #### **Vorteile**
 Durch die Verwendung von Quartz bieten sich dir die folgenden Vorteile:

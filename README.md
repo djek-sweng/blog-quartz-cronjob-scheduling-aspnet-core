@@ -4,3 +4,5 @@ Almost every application needs them, services that perform certain background ta
 
 [Quartz.NET](https://www.quartz-scheduler.net/) is a proven, open source and well documented job scheduling framework that can be used in a wide variety of applications.
 
+This blog post shows you how to integrate Quartz.NET (Quartz for short) into your [ASP.NET Core](https://learn.microsoft.com/en-US/aspnet/core/) WebApi. In a proof of concept application, you'll test Quartz's interaction with a relational database system (here, [Postgres](https://www.postgresql.org/)) as well as with Microsoft's object database mapper [Entity Framework Core](https://docs.microsoft.com/en-us/ef/) (EF Core for short).
+

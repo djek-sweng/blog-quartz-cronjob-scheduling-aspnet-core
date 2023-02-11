@@ -94,3 +94,34 @@ Besides the `CronExpression` the implementation of `ICronJob` requires a `Name`,
 
 You can find examples of valid cron expressions in the class [`CronExpressionDefaults`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronExpressionDefaults.cs) or in the Quartz [documentation](https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions). You can also find a cron expression generator and explainer for Quartz on the homepage [freeformater.com](https://www.freeformatter.com/cron-expression-generator-quartz.html).
 
+#### **Create abstract base class CronJobBase**
+
+To avoid direct dependency of cron jobs on `ICronJob` and `IJob` or on Quartz itself, create the abstract base class [`CronJobBase`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/CronJobBase.cs).
+
+```csharp
+// File: CronJobBase.cs
+
+namespace CronJobScheduling.Abstractions;
+
+public abstract class CronJobBase<T> : ICronJob
+    where T : class
+{
+    public virtual string Name => typeof(T).FullName ?? nameof(T);
+    public virtual string Description => string.Empty;
+
+    public abstract string Group { get; }
+    public abstract string CronExpression { get; }
+
+    public async Task Execute(IJobExecutionContext context)
+    {
+        await InvokeAsync(context.CancellationToken);
+    }
+
+    protected abstract Task InvokeAsync(CancellationToken cancellationToken);
+}
+```
+
+The base class implements the `Execute()` method required by `IJob`. Inside `Execute()` the method `InvokeAsync()` is called, which must be implemented by the deriving child class. Inside `InvokeAsync()` the actual functionality of the cron job is then embedded.
+
+In the following section you implement cron jobs as child classes of `CronJobBase`.
+

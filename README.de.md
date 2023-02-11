@@ -95,6 +95,7 @@ Neben der `CronExpression` erfordert die Implementierung von `ICronJob` einen `N
 Beispiele für gültige Cron-Expressions findest du in der Klasse [`CronExpressionDefaults`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronExpressionDefaults.cs) oder in der Quartz [Dokumentation](https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions). Außerdem findest du auf der Homepage [freeformater.com](https://www.freeformatter.com/cron-expression-generator-quartz.html) einen Cron Expression Generator und Explainer für Quartz.
 
 #### **Abstrakte Basis-Klasse CronJobBase erstellen**
+
 Um eine direkte Abhängigkeit der Cron-Jobs auf `ICronJob` und `IJob` bzw. auf Quartz selbst zu vermeiden, erstellst du die abstrakte Basis-Klasse [`CronJobBase`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Abstractions/CronJobBase.cs).
 
 ```csharp

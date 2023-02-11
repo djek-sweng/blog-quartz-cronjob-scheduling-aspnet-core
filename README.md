@@ -323,7 +323,7 @@ You can then use the following connection string to connect the applications to 
 Server=localhost; Port=4200; Username=root; Password=pasSworD; Database=cronjob_db;
 ```
 
-If you have a Postgres database server installed on your computer, you can also use it. In this case, ensure an appropriate configuration.
+If you have a Postgres database server installed on your machine, you can also use it. In this case, ensure an appropriate configuration.
 
 Afterwards start the WebApi by executing the shell script [`run_webapi.sh`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/run_webapi.sh). If you use the shell script `run_npgsql_server.sh` for the application example, then you can open the database [Adminer](https://www.adminer.org/en/) in your browser using the following URL http://localhost:4300.
 

@@ -20,7 +20,7 @@ public class NoteController : ControllerBase
 
         return Ok(note);
     }
-    
+
     [HttpDelete]
     public async Task<IActionResult> DeleteNotesAsync(CancellationToken cancellationToken)
     {

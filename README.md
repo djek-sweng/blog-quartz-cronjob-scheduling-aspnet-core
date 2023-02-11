@@ -11,8 +11,8 @@ This blog post shows you how to integrate Quartz.NET (Quartz for short) into you
 Using Quartz gives you the following advantages:
 
 * Quartz can be integrated into your existing applications or run as a standalone program.
-* An executable job is a class that implements a Quartz job interface.
-* The Quartz scheduler executes a job when the associated trigger occurs.
+* An executable job is a class that implements a specific Quartz job interface.
+* The Quartz scheduler executes a job, when the associated trigger occurs.
 * A trigger supports a variety of options and can be adjusted to the second via a [cron expression](https://www.freeformatter.com/cron-expression-generator-quartz.html).
 * Scheduling results can be monitored via the implementation of a listener.
 
@@ -31,7 +31,7 @@ dotnet add package Quartz.Extensions.DependencyInjection
 dotnet add package Quartz.Extensions.Hosting
 ```
 
-In the file [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/Directory.Build.targets) you will then find all the required packages you need to install for the application shown here.
+In the file [`Directory.Build.targets`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/Directory.Build.targets) you will then find all required packages you need to install for the application shown here.
 
 #### **Configure Quartz**
 

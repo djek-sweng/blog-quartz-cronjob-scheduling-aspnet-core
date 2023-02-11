@@ -123,7 +123,7 @@ public abstract class CronJobBase<T> : ICronJob
 }
 ```
 
-The base class implements the `Execute()` method required by `IJob`. Inside `Execute()` the method `InvokeAsync()` is called, which must be implemented by the deriving child class. Inside `InvokeAsync()` the actual functionality of the cron job is then embedded.
+The base class implements the method `Execute()` required by the interface `IJob`. Inside `Execute()` the method `InvokeAsync()` is called, which must be implemented by the deriving child class. Inside `InvokeAsync()` the actual functionality of the cron job is then embedded.
 
 In the following section you implement cron jobs as child classes of `CronJobBase`.
 

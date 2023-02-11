@@ -2,6 +2,7 @@ namespace CronJobScheduling.Core;
 
 public static class CronExpressionDefaults
 {
+    // https://www.freeformatter.com/cron-expression-generator-quartz.html
     // https://www.quartz-scheduler.net/documentation/quartz-4.x/tutorial/crontrigger.html
     //
     // Field Name     Mandatory	Allowed Values	   Allowed Special Characters

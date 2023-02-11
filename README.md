@@ -236,7 +236,7 @@ The method uses `Reflection` to register all cron jobs of the given `Assembly`.
 
 #### **Start cron job scheduling**
 
-In the last step, the Quartz Scheduler is populated with the implemented cron jobs and started. This is done automatically via the method [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
+In the last step, the Quartz scheduler is populated with the implemented cron jobs and started. This is done automatically via the method [`StartSchedulingAsync()`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling/Core/CronJobSchedulingStarter.cs).
 
 ```csharp
 // File: CronJobSchedulingStarter.cs (excerpt)
@@ -301,7 +301,7 @@ public static async Task StartSchedulingAsync(
 }
 ```
 
-The cron jobs and the Quartz scheduler factory are obtained from the service container. The scheduler factory creates the scheduler, which is then populated with a dictionary of pairs of jobs and triggers. The triggers are configured with the associated CronExpressions. Finally, the scheduler is started.
+The cron jobs and the Quartz scheduler factory are obtained from the service container. The scheduler factory creates the scheduler, which is then populated with a dictionary of pairs of jobs and triggers. The triggers are configured with the associated cron expressions. Finally, the scheduler is started.
 
 After the Quartz scheduler has been started, the WebApi can also be started. The last two lines of the file [`Program.cs`](https://github.com/djek-sweng/blog-quartz-cronjob-scheduling-aspnet-core/blob/main/src/CronJobScheduling.WebApi/Program.cs) start the scheduler and WebApi.
 

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CronJobScheduling.DataStore\CronJobScheduling.DataStore.csproj" />
+    <ProjectReference Include="..\CronJobScheduling\CronJobScheduling.csproj" />
+  </ItemGroup>
+
+  <Target Name="NetClean" BeforeTargets="Clean">
+    <RemoveDir Directories="bin" />
+    <RemoveDir Directories="obj" />
+  </Target>
+
+</Project>
